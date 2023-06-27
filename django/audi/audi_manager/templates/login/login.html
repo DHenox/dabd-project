@@ -1,0 +1,26 @@
+<html lang="es">
+    <head>
+        {% load static %}
+        <title>Login</title>
+        <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    </head>
+
+    <body>
+        <br>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg" alt="Audi" class="logo">
+        {% if error_message %}
+        <p>{{ error_message }}</p>
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <input type="submit" value="Login">
+        </form>
+    </body>
+</html>

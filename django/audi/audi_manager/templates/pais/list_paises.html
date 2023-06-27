@@ -1,0 +1,75 @@
+<!-- list_paises.html -->
+<html lang="es">
+
+<head>
+    <title>Países</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/list_paises.css'%}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/list_paises.js'%}"></script>
+</head>
+
+<body>
+
+    <br>
+    <br>
+    <a href="/audi_manager/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg"
+            alt="Audi" class="logo" /></a>
+    <br>
+    <br>
+    <button class="logout-button" onclick="logout()">Logout</button>
+
+    <span class="totales"><strong>Paises totales:</strong> {{ paises_count }}</span>
+    <br>
+    <form class="XD" method="GET" action="">
+        <input type="text" name="nombre" id="nombre-input" placeholder="Buscar por nombre"
+            value="{% if nombre_query is not empty %}{{ nombre_query }}{% else %}{{ '' }}{% endif %}" />
+    </form>
+
+    <ul class="paises-list">
+        {% for pais, ventas in combined_data %}
+        <li>
+            <a href="/audi_manager/paises/{{ pais.nombre }}">
+                <div style="display: flex; justify-content: space-between; width: 100%; margin: 0 auto;">
+                    <div style="width: 20%;">
+                        <strong>Pais:</strong> {{ pais.nombre }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Ventas:</strong> {{ ventas }}
+                    </div>
+                    <div style="width: 20%;">
+                        <form style="display: inline" class="eliminar"
+                            action="/audi_manager/delete_pais/{{ pais.nombre }}" method="get">
+                            <input type="submit" value="Eliminar" />
+                        </form>
+                    </div>
+                </div>
+            </a>
+        </li>
+        {% empty %}
+        <li>No paises found.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Add pagination links -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if paises_page.has_previous %}
+            <a href="?pais={{ pais_query }}&nombre={{ nombre_query }}&page=1" class="material-link">&laquo; First</a>
+            <a href="?pais={{ pais_query }}&nombre={{ nombre_query }}&page={{ paises_page.previous_page_number }}"
+                class="material-link">Previous</a>
+            {% endif %}
+
+            <span class="current-page">{{ paises_page.number }}</span>
+
+            {% if paises_page.has_next %}
+            <a href="?pais={{ pais_query }}&nombre={{ nombre_query }}&page={{ paises_page.next_page_number }}"
+                class="material-link">Next</a>
+            <a href="?pais={{ pais_query }}&nombre={{ nombre_query }}&page={{ paises_page.paginator.num_pages }}"
+                class="material-link">Last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</body>
+
+</html>

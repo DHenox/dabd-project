@@ -1,0 +1,90 @@
+<!-- list_poblaciones.html -->
+<html lang="es">
+    <head>
+        <title>Poblaciones</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/list_poblaciones.css'%}">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="{% static 'js/list_poblaciones.js'%}"></script>
+    </head>
+    
+    <!-- Rest of the HTML template -->
+    
+    <br>
+    <a href="/audi_manager/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg" alt="Audi"
+            class="logo" /></a>
+    <br>
+    
+    <button class="logout-button" onclick="logout()">Logout</button>
+    
+    <span class="totales"><strong>Poblaciones totales:</strong> {{ poblaciones_count }}</span>
+    <br>
+    
+    <form method="GET" action="" class="XD">
+        <input type="text" name="nombre" id="nombre-input" placeholder="Buscar por población"
+            value="{% if nombre_query %}{{ nombre_query }}{% endif %}">
+        <input type="text" name="pais" id="pais-input" placeholder="Buscar por país"
+            value="{% if pais_query %}{{ pais_query }}{% endif %}">
+        <!-- Button to switch between ascending and descending -->
+        <button id="toggle-button" onclick="toggleOrder(event)">
+            {% if order == 'asc' %}
+            Ordenado por Ventas: ▲
+            {% else %}
+            Ordenado por Ventas: ▼
+            {% endif %}
+        </button>
+    
+        <script>
+            var order = "{{ order }}";
+        </script>
+    </form>
+    
+    <ul class="poblaciones-list">
+        {% for poblacion, ventas in combined_data %}
+        <li>
+            <a href="/audi_manager/poblaciones/{{ poblacion.pais.nombre }}/{{ poblacion.nombre }}">
+                <div style="display: flex; justify-content: space-between; width: 100%; margin: 0 auto;">
+                    <div style="width: 20%;">
+                        <strong>Población:</strong> {{ poblacion.nombre }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>País:</strong> {{ poblacion.pais.nombre }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Ventas:</strong> {{ ventas }}
+                    </div>
+                    <div style="width: 20%;">
+                        <form style="display: inline" class="eliminar"
+                            action="/audi_manager/delete_poblacion/{{ poblacion.pais.nombre }}/{{ poblacion.nombre }}" method="get">
+                            <input type="submit" value="Eliminar" />
+                        </form>
+                    </div>
+                </div>
+            </a>
+        </li>
+        {% empty %}
+        <li>No poblaciones found.</li>
+        {% endfor %}
+    </ul>
+    
+    <!-- Add pagination links -->
+    <!-- Add pagination links -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if poblaciones_page.has_previous %}
+            <a href="?pais={{ pais_query }}&nombre={{ nombre_query }}&page=1" class="material-link">&laquo; First</a>
+            <a href="?pais={{ pais_query }}&nombre={{ nombre_query }}&page={{ poblaciones_page.previous_page_number }}"
+                class="material-link">Previous</a>
+            {% endif %}
+    
+            <span class="current-page">{{ poblaciones_page.number }}</span>
+    
+            {% if poblaciones_page.has_next %}
+            <a href="?pais={{ pais_query }}&nombre={{ nombre_query }}&page={{ poblaciones_page.next_page_number }}"
+                class="material-link">Next</a>
+            <a href="?pais={{ pais_query }}&nombre={{ nombre_query }}&page={{ poblaciones_page.paginator.num_pages }}"
+                class="material-link">Last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</html>

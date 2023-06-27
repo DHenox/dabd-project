@@ -1,0 +1,112 @@
+<html lang="es">
+    <head>
+        <title>Trabajadores</title>
+        {% load static %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{% static 'css/list_trabajadores.css'%}">
+        
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="{% static 'js/list_trabajadores.js'%}"></script>
+    </head>
+
+
+    <body>
+        <br>
+        <a href="/audi_manager/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg"
+                alt="Audi" class="logo" /></a>
+        <br>
+
+        <button class="logout-button" onclick="logout()">Logout</button>
+
+        <span class="totales"><strong>Trabajadores totales:</strong> {{ trabajadores_count }}</span>
+        <br>
+
+        <!-- Rest of the HTML template -->
+        <form class="XD" method="GET" action="">
+            <input type="text" name="dni" id="dni-input" placeholder="Buscar por DNI"
+                value="{% if dni_query %}{{ dni_query }}{% endif %}">
+            <input type="text" name="name" id="name-input" placeholder="Buscar por nombre"
+                value="{% if name_query %}{{ name_query }}{% endif %}">
+            <div class="dropbox">
+                <label class="filter-label">Filtrar por disponibilidad:</label>
+                <select id="disponibilidad-filter" class="custom-select" name="disponibilidad">
+                    <option value="">Todas las disponibilidades</option>
+                    {% for disponibilidad in disponibilidades %}
+                    {% if disponibilidad == disponibilidad_query %}
+                    <option value="{{ disponibilidad }}" selected="selected">{{ disponibilidad }}</option>
+                    {% else %}
+                    <option value="{{ disponibilidad }}">{{ disponibilidad }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="dropbox">
+                <label class="filter-label">Filtrar por tipo de trabajador:</label>
+                <select id="tipo-trabajador-filter" class="custom-select" name="tipo">
+                    <option value="">Todo tipo de trabajadores</option>
+                    {% for tipo_trabajador in tipos_trabajador %}
+                    {% if tipo_trabajador == tipo_query %}
+                    <option value="{{ tipo_trabajador }}" selected="selected">{{ tipo_trabajador }}</option>
+                    {% else %}
+                    <option value="{{ tipo_trabajador }}">{{ tipo_trabajador }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+
+        <ul class="trabajadores-list">
+            {% for trabajador in trabajadores_page %}
+            <li>
+                <a href="/audi_manager/trabajadores/{{ trabajador.dni }}">
+                    <div style="display: flex; justify-content: space-between; width: 100%; margin: 0 auto;">
+                        <div style="width: 20%;">
+                            <strong>DNI:</strong> {{ trabajador.dni }}
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>Nombre:</strong> {{ trabajador.nombre }}
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>Experiencia:</strong> {{ trabajador.experiencia }} años
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>Disponibilidad:</strong> {{ trabajador.disponibilidad }}
+                        </div>
+                        <div style="width: 20%;">
+                            <form style="display: inline" class="eliminar"
+                                action="/audi_manager/delete_trabajador/{{ trabajador.dni }}" method="get">
+                                <input type="submit" value="Eliminar" />
+                            </form>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {% empty %}
+            <li>No personas found.</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Add pagination links -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if trabajadores_page.has_previous %}
+                <a
+                    href="?name={{ name_query }}&dni={{ dni_query }}&disponibilidad={{ disponibilidad_query }}&tipo={{ tipo_query }}&page=1">&laquo;
+                    First</a>
+                <a
+                    href="?name={{ name_query }}&dni={{ dni_query }}&disponibilidad={{ disponibilidad_query }}&tipo={{ tipo_query }}&page={{ trabajadores_page.previous_page_number }}">Previous</a>
+                {% endif %}
+
+                <span class="current-page">{{ trabajadores_page.number }}</span>
+
+                {% if trabajadores_page.has_next %}
+                <a
+                    href="?name={{ name_query }}&dni={{ dni_query }}&disponibilidad={{ disponibilidad_query }}&tipo={{ tipo_query }}&page={{ trabajadores_page.next_page_number }}">Next</a>
+                <a
+                    href="?name={{ name_query }}&dni={{ dni_query }}&disponibilidad={{ disponibilidad_query }}&tipo={{ tipo_query }}&page={{ trabajadores_page.paginator.num_pages }}">Last
+                    &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </body>
+</html>

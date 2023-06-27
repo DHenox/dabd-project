@@ -1,0 +1,94 @@
+<!-- METER EN JS XD -->
+<html lang="es">
+    <head>
+        <title>Técnico</title>
+    </head>
+    <script>
+        var dni_tecnico = "{{ tecnico.dni }}";
+        function addVehiculo() {
+            var selectedVehiculo = document.getElementById("vehiculo_add").value;
+            var url = '/audi_manager/add_vehiculo/' + selectedVehiculo + '/' + dni_tecnico;
+            window.location.href = url;
+        }
+    
+        function deleteVehiculo(num_bastidor) {
+            var url = '/audi_manager/delete_vehiculo/' + num_bastidor + '/' + dni_tecnico;
+            window.location.href = url;
+        }
+    </script>
+    
+    <h2>Info</h2>
+    
+    <form method="post" action="{% url 'tecnico' tecnico.dni %}">
+        {% csrf_token %}
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ tecnico.nombre }}">
+        <br>
+        <label for="dni">DNI:</label>
+        <input type="text" id="dni" name="dni" value="{{ tecnico.dni }}">
+        <br>
+        <label for="num_tel">Número de teléfono:</label>
+        <input type="text" id="num_tel" name="num_tel" value="{{ tecnico.num_tel }}">
+        <br>
+        <label for="experiencia">Experiencia:</label>
+        <input type="text" id="experiencia" name="experiencia" value="{{ tecnico.experiencia }}">
+        <br>
+        <!-- disponibilidad y especializacion dropdowns -->
+        <label for="disponibilidad">Disponibilidad:</label>
+        <select name="disponibilidad" id="disponibilidad">
+            {% for disponibilidad in tipos_disponibilidades %}
+            {% if disponibilidad == tecnico.trabajador.disponibilidad %}
+            <option value="{{ disponibilidad }}" selected="selected">{{ disponibilidad }}</option>
+            {% else %}
+            <option value="{{ disponibilidad }}">{{ disponibilidad }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <br>
+        <label for="especializacion">Especialización:</label>
+        <select name="especializacion" id="especializacion">
+            {% for especializacion in tipos_especializaciones %}
+            {% if especializacion == tecnico.especializacion %}
+            <option value="{{ especializacion }}" selected="selected">{{ especializacion }}</option>
+            {% else %}
+            <option value="{{ especializacion }}">{{ especializacion }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <br>
+        <input type="submit" value="Guardar">
+        <p>{{ error_message }}</p>
+    </form>
+    
+    <H1>Vehiculos asociados</H1>
+    <!-- dropdown -->
+    <form>
+        {% csrf_token %}
+        <label for="vehiculo">Vehiculo:</label>
+        <select name="vehiculo" id="vehiculo_add">
+            {% for vehiculo in vehiculos_sin_tecnico %}
+            <option value="{{ vehiculo.num_bastidor }}">{{ vehiculo.num_bastidor }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <input type="button" value="Añadir vehiculo" onclick="addVehiculo()" />
+    </form>
+    
+    <ul>
+        {% for vehiculo in vehiculos %}
+        <!-- link to num_bastidor -->
+        <li><strong>Num bastidor: </strong><a href="{% url 'vehiculo' vehiculo.num_bastidor %}">
+                {{ vehiculo.num_bastidor}}</a></li>
+        <ul>
+            {% if vehiculo.matricula == None %}
+            <li><strong>Matricula: </strong> Sin matricular</li>
+            {% else %}
+            <li><strong>Matricula: </strong> {{ vehiculo.matricula }}</li>
+            {% endif %}
+            <li><strong>Modelo: </strong>{{ vehiculo.modelo }}</li>
+            <input type="button" value="Eliminar vehiculo" onclick="deleteVehiculo('{{ vehiculo.num_bastidor }}')" />
+        </ul>
+        <br>
+        {% endfor %}
+    </ul>
+</html>

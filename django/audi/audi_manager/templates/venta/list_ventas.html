@@ -1,0 +1,90 @@
+<html lang="es">
+    <head>
+        <title>Ventas</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/list_ventas.css'%}">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="{% static 'js/list_ventas.js'%}"></script>
+    </head>
+    
+    <body>
+        <br>
+        <br>
+        <a href="/audi_manager/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg"
+                alt="Audi" class="logo" /></a>
+        <br>
+        <br>
+    
+        <button class="logout-button" onclick="logout()">Logout</button>
+    
+        <span class="totales"><strong>Ventas totales:</strong> {{ ventas_count }}</span>
+        <br>
+    
+        <!-- Rest of the HTML template -->
+        <form class="XD" method="GET" action="">
+            <input type="text" name="num_tel" id="num_tel-input" placeholder="Buscar por phone number"
+                value="{% if num_tel_query is not empty %}{{ num_tel_query }}{% else %}{{ '' }}{% endif %}" />
+            <input type="text" name="pais" id="pais-input" placeholder="Buscar por country"
+                value="{% if pais_query is not empty %}{{ pais_query }}{% else %}{{ '' }}{% endif %}" />
+            <input type="text" name="poblacion" id="poblacion-input" placeholder="Buscar por poblacion"
+                value="{% if poblacion_query is not empty %}{{ poblacion_query }}{% else %}{{ '' }}{% endif %}" />
+        </form>
+    
+        <ul class="ventas-list">
+            {% for venta in ventas_page %}
+            <a href="/audi_manager/venta/{{ venta.id }}">
+                <li>
+                    <div style="display: flex; justify-content: space-between; width: 100%; margin: 0 auto;">
+                        <div style="width: 20%;">
+                            <strong>Fecha:</strong> {{ venta.fecha }}
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>Precio final:</strong> {{ venta.precio_final }} €
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>Exposición:</strong> {{ venta.exposicion.numero }}
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>Cliente:</strong> {{ venta.cliente.nombre }}
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>Comercial:</strong> {{ venta.comercial.nombre }}
+                        </div>
+                        <div style="width: 20%;">
+                            <form style="display: inline" class="eliminar"
+                                action="/audi_manager/delete_venta/{{ venta.vehiculo.num_bastidor }}/{{ venta.cliente.dni }}" method="get">
+                                <input type="submit" value="Eliminar" />
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            </a>
+    
+            {% empty %}
+            <li>No ventas found.</li>
+            {% endfor %}
+        </ul>
+    
+        <!-- Add pagination links -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if ventas_page.has_previous %}
+                <a href="?num_tel={{ num_tel_query }}&poblacion={{ poblacion_query }}&pais={{ pais_query }}&page=1">&laquo;
+                    First</a>
+                <a
+                    href="?num_tel={{ num_tel_query }}&poblacion={{ poblacion_query }}&pais={{ pais_query }}&page={{ ventas_page.previous_page_number }}">Previous</a>
+                {% endif %}
+    
+                <span class="current-page">{{ ventas_page.number }}</span>
+    
+                {% if ventas_page.has_next %}
+                <a
+                    href="?num_tel={{ num_tel_query }}&poblacion={{ poblacion_query }}&pais={{ pais_query }}&page={{ ventas_page.next_page_number }}">Next</a>
+                <a
+                    href="?num_tel={{ num_tel_query }}&poblacion={{ poblacion_query }}&pais={{ pais_query }}&page={{ ventas_page.paginator.num_pages }}">Last
+                    &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </body>
+</html>

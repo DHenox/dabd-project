@@ -1,0 +1,49 @@
+<html lang="es">
+
+<head>
+    <title>Vehículo</title>
+</head>
+
+<body>
+    <form method="post" action="{% url 'vehiculo' vehiculo.num_bastidor %}">
+        {% csrf_token %}
+        <label for="num_bastidor">Num Bastidor:</label>
+        <input type="text" id="num_bastidor" name="num_bastidor" value="{{  vehiculo.num_bastidor }}">
+        <br>
+        <label for="modelo">Modelo:</label>
+        <input type="text" id="modelo" name="modelo" value="{{  vehiculo.modelo }}">
+        <br>
+        <input type="submit" value="Guardar cambios">
+    </form>
+</body>
+
+<H1>Descripción del vehículo</H1>
+<p>{{ vehiculo.descripcion }}</p>
+<H1>Tecnico asociado</H1>
+<ul>
+    <!-- link to tecnico -->
+    <li><a href="{% url 'tecnico' vehiculo.tecnico.dni %}">{{ vehiculo.tecnico.nombre }}</a></li>
+
+</ul>
+
+<H1>Exposiciones asociadas</H1>
+<ul>
+    {% for exposicion in exposiciones %}
+    <!-- link to id -->
+    <li><strong>Numero: </strong><a href="{% url 'exposicion' exposicion.numero %}">{{ exposicion.numero }}</a></li>
+    <ul>
+        <li><strong>Km: </strong>{{ exposicion.km }}</li>
+        <li><strong>Precio: </strong>{{ exposicion.precio }}</li>
+        <!-- link to vehiculo -->
+        <li><strong>Num bastidor: </strong><a href="{% url 'vehiculo' exposicion.vehiculo.num_bastidor %}">
+                {{ exposicion.vehiculo.num_bastidor }}</a></li>
+        <!-- link to concesionario -->
+        <li><strong>Concesionario: </strong><a href="{% url 'concesionario' exposicion.concesionario.num_tel %}">
+                {{ exposicion.concesionario.num_tel }}</a></li>
+
+    </ul>
+    <br>
+    {% endfor %}
+</ul>
+
+</html>

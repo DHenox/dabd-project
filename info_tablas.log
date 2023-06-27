@@ -1,0 +1,89 @@
+PERSONAS
+    dni    |      nombre      |  num_tel  |    username     |  password
+-----------+------------------+-----------+-----------------+------------
+ 04858322D | Ashley Hernandez | 653332972 | stephanieharper | AE#Yv7Tu6F
+
+
+CLIENTES
+    dni    |             email
+-----------+-------------------------------
+ 42270842Q | nicholsjacqueline@example.com
+(1 row)
+
+
+PAISES
+ nombre
+---------
+ Bolivia
+(1 row)
+
+
+POBLACIONES
+ id |       nombre       | pais
+----+--------------------+-------
+  1 | Lake Elizabethland | Chile
+(1 row)
+
+
+CONCESIONARIOS
+  num_tel  |          email           | poblacion
+-----------+--------------------------+-----------
+ 918607474 | johnsonkaren@example.com |        29
+(1 row)
+
+
+TRABAJADORES
+    dni    | experiencia | disponibilidad |  num_tel
+-----------+-------------+----------------+-----------
+ 93347712G |          14 | Tarde          | 949539192
+(1 row)
+
+
+TECNICOS
+    dni    | especializacion
+-----------+-----------------
+ 73668353C | Mecanica
+(1 row)
+
+
+COMERCIALES
+    dni    |           email
+-----------+----------------------------
+ 27674651Q | foleychristian@example.net
+(1 row)
+
+
+VALORACIONES
+ id | rating |   fecha    | num_tel_concesionario | dni_cliente
+----+--------+------------+-----------------------+-------------
+  1 |      5 | 2023-05-26 | 916419610             | 88368570V
+(1 row)
+
+
+VEHICULOS
+   num_bastidor   | matricula | ano_fabricacion | modelo |                                                     descripcion                                                      | dni_tecnico
+------------------+-----------+-----------------+--------+----------------------------------------------------------------------------------------------------------------------+-------------
+ skGKSzhRpbVxnQZj |           |            1973 | S4     | Assume trial make itself money. Again foreign position clear rich recently.                                         +| 93317235W
+                  |           |                 |        | Leave past Mr actually call minute. Everyone nearly great design statement month movement. Few among least bar need. |
+(1 row)
+
+
+MOTORES
+ id | combustible | potencia
+----+-------------+----------
+  1 | Diesel      |      100
+(1 row)
+
+
+EXPOSICIONES
+ id | numero | precio | km | num_tel_concesionario | num_bastidor_vehiculo
+----+--------+--------+----+-----------------------+-----------------------
+  1 | 113946 | 586.12 |  0 | 987098528             | KhwpEqSiVkUYSPIU
+(1 row)
+
+
+VENTAS
+ id |   fecha    | precio_final | exposicion_id | num_bastidor_vehiculo | dni_cliente | dni_comercial
+----+------------+--------------+---------------+-----------------------+-------------+---------------
+  1 | 2023-04-07 |       873.05 |          2609 | rrdrRwLIgupYERDe      | 42270842Q   | 76769319B
+(1 row)

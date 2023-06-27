@@ -1,0 +1,138 @@
+=====================================================================================================================================
+Escriu la query:
+=====================================================================================================================================
+SELECT co.dni as dni_comercial, c.num_tel AS concesionario, p.nombre AS pais, COUNT(*) AS numero_ventas
+FROM practica.audi_manager_comercial AS co JOIN practica.audi_manager_trabajador AS t ON co.dni = t.dni
+JOIN practica.audi_manager_concesionario AS c ON t.num_tel = c.num_tel JOIN practica.audi_manager_poblacion
+AS p ON c.poblacion = p.id JOIN practica.audi_manager_venta AS v ON co.dni = v.dni_comercial WHERE co.dni
+IN ( SELECT dni_comercial FROM practica.audi_manager_venta GROUP BY dni_comercial ORDER BY COUNT(*) DESC LIMIT 1 )
+GROUP BY c.num_tel, p.nombre, co.dni;
+
+
+ dni_comercial | concesionario |    pais     | numero_ventas
+---------------+---------------+-------------+---------------
+ 14932437D     | 972102173     | Francomouth |            12
+
+=====================================================================================================================================
+Quants Seq Scan es fan?
+=====================================================================================================================================
+1
+
+=====================================================================================================================================
+Quants Index Scan es fan?
+=====================================================================================================================================
+3
+
+=====================================================================================================================================
+Quants Index Only Scan es fan?
+=====================================================================================================================================
+2
+
+=====================================================================================================================================
+Quants Bitmap Index Scan es fan?
+=====================================================================================================================================
+0
+
+=====================================================================================================================================
+Quants Nested Loops Join es fan?
+=====================================================================================================================================
+0
+=====================================================================================================================================
+Quants Hash Join es fan?
+=====================================================================================================================================
+0
+
+=====================================================================================================================================
+Quants Merge Join es fan?
+=====================================================================================================================================
+0
+
+=====================================================================================================================================
+Crea un índex que permeti canviar el QUERY PLAN anterior. Escriu comanda usada per crear-lo:
+=====================================================================================================================================
+
+CREATE INDEX idx_audi_manager_poblacion ON practica.audi_manager_poblacion(nombre);
+
+=====================================================================================================================================
+Quins canvis en els diferents tipus d'Access Path i Tipus de Joins anteriors has observat?
+=====================================================================================================================================
+No hi ha cap canvi, django ja ho optimitza tot correctament.
+
+=====================================================================================================================================
+Has aconseguit una millora en el temps d'execució? Indica el guany de temps en % i sense decimals. (0 - 100)
+=====================================================================================================================================
+0
+
+=====================================================================================================================================
+SIN INDEX ADICIONALES (EXPLAIN ANALYZE)
+=====================================================================================================================================
+  GroupAggregate  (cost=4633.47..4633.52 rows=2 width=40) (actual time=59.995..59.998 rows=1 loops=1)
+   Group Key: c.num_tel, p.nombre, co.dni
+   ->  Sort  (cost=4633.47..4633.48 rows=2 width=32) (actual time=59.990..59.992 rows=12 loops=1)
+         Sort Key: c.num_tel, p.nombre, co.dni
+         Sort Method: quicksort  Memory: 25kB
+         ->  Nested Loop  (cost=4625.15..4633.46 rows=2 width=32) (actual time=59.940..59.981 rows=12 loops=1)
+               ->  Nested Loop  (cost=4624.74..4633.00 rows=1 width=52) (actual time=59.929..59.943 rows=12 loops=1)
+                     ->  Nested Loop  (cost=4624.32..4632.40 rows=1 width=42) (actual time=59.915..59.918 rows=1 loops=1)
+                           ->  Nested Loop  (cost=4624.04..4632.09 rows=1 width=38) (actual time=59.909..59.911 rows=1 loops=1)
+                                 ->  Nested Loop  (cost=4623.75..4631.78 rows=1 width=30) (actual time=59.902..59.904 rows=1 loops=1)
+                                       ->  Limit  (cost=4623.34..4623.34 rows=1 width=18) (actual time=59.885..59.886 rows=1 loops=1)
+                                             ->  Sort  (cost=4623.34..4737.56 rows=45689 width=18) (actual time=59.884..59.885 rows=1 loops=1)
+                                                   Sort Key: (count(*)) DESC
+                                                   Sort Method: top-N heapsort  Memory: 25kB
+                                                   ->  HashAggregate  (cost=3938.00..4394.89 rows=45689 width=18) (actual time=48.009..54.066 rows=54612 loops=1)
+                                                         Group Key: audi_manager_venta.dni_comercial
+                                                         ->  Seq Scan on audi_manager_venta  (cost=0.00..3218.00 rows=144000 width=10) (actual time=0.008..11.330 rows=144000 loops=1)
+                                       ->  Index Scan using audi_manager_trabajador_dni_07162c13_like on audi_manager_trabajador t  (cost=0.42..8.44 rows=1 width=20) (actual time=0.013..0.013 rows=1 loops=1)
+                                             Index Cond: ((dni)::text = (audi_manager_venta.dni_comercial)::text)
+                                 ->  Index Scan using audi_manager_concesionario_num_tel_76d8c870_like on audi_manager_concesionario c  (cost=0.29..0.31 rows=1 width=18) (actual time=0.005..0.005 rows=1 loops=1)
+                                       Index Cond: ((num_tel)::text = (t.num_tel)::text)
+                           ->  Index Scan using audi_manager_poblacion_pkey on audi_manager_poblacion p  (cost=0.28..0.31 rows=1 width=20) (actual time=0.005..0.005 rows=1 loops=1)
+                                 Index Cond: (id = c.poblacion)
+                     ->  Index Only Scan using audi_manager_venta_dni_comercial_07efa699_like on audi_manager_venta v  (cost=0.42..0.57 rows=3 width=10) (actual time=0.007..0.017 rows=12 loops=1)
+                           Index Cond: (dni_comercial = (t.dni)::text)
+                           Heap Fetches: 12
+               ->  Index Only Scan using idx_audi_manager_comercial_dni on audi_manager_comercial co  (cost=0.41..0.46 rows=1 width=10) (actual time=0.003..0.003 rows=1 loops=12)
+                     Index Cond: (dni = (t.dni)::text)
+                     Heap Fetches: 12
+ Planning Time: 1.411 ms
+ Execution Time: 60.954 ms
+(31 rows)
+
+
+=====================================================================================================================================
+CREATE INDEX idx_audi_manager_poblacion ON practica.audi_manager_poblacion(nombre);
+=====================================================================================================================================
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=4633.47..4633.52 rows=2 width=40) (actual time=60.597..60.600 rows=1 loops=1)
+   Group Key: c.num_tel, p.nombre, co.dni
+   ->  Sort  (cost=4633.47..4633.48 rows=2 width=32) (actual time=60.591..60.594 rows=12 loops=1)
+         Sort Key: c.num_tel, p.nombre, co.dni
+         Sort Method: quicksort  Memory: 25kB
+         ->  Nested Loop  (cost=4625.15..4633.46 rows=2 width=32) (actual time=60.540..60.580 rows=12 loops=1)
+               ->  Nested Loop  (cost=4624.74..4633.00 rows=1 width=52) (actual time=60.528..60.542 rows=12 loops=1)
+                     ->  Nested Loop  (cost=4624.32..4632.40 rows=1 width=42) (actual time=60.518..60.521 rows=1 loops=1)
+                           ->  Nested Loop  (cost=4624.04..4632.09 rows=1 width=38) (actual time=60.511..60.514 rows=1 loops=1)
+                                 ->  Nested Loop  (cost=4623.75..4631.78 rows=1 width=30) (actual time=60.503..60.505 rows=1 loops=1)
+                                       ->  Limit  (cost=4623.34..4623.34 rows=1 width=18) (actual time=60.485..60.486 rows=1 loops=1)
+                                             ->  Sort  (cost=4623.34..4737.56 rows=45689 width=18) (actual time=60.484..60.484 rows=1 loops=1)
+                                                   Sort Key: (count(*)) DESC
+                                                   Sort Method: top-N heapsort  Memory: 25kB
+                                                   ->  HashAggregate  (cost=3938.00..4394.89 rows=45689 width=18) (actual time=48.351..54.526 rows=54612 loops=1)
+                                                         Group Key: audi_manager_venta.dni_comercial
+                                                         ->  Seq Scan on audi_manager_venta  (cost=0.00..3218.00 rows=144000 width=10) (actual time=0.008..11.403 rows=144000 loops=1)
+                                       ->  Index Scan using audi_manager_trabajador_dni_07162c13_like on audi_manager_trabajador t  (cost=0.42..8.44 rows=1 width=20) (actual time=0.014..0.014 rows=1 loops=1)
+                                             Index Cond: ((dni)::text = (audi_manager_venta.dni_comercial)::text)
+                                 ->  Index Scan using audi_manager_concesionario_num_tel_76d8c870_like on audi_manager_concesionario c  (cost=0.29..0.31 rows=1 width=18) (actual time=0.006..0.006 rows=1 loops=1)
+                                       Index Cond: ((num_tel)::text = (t.num_tel)::text)
+                           ->  Index Scan using audi_manager_poblacion_pkey on audi_manager_poblacion p  (cost=0.28..0.31 rows=1 width=20) (actual time=0.005..0.005 rows=1 loops=1)
+                                 Index Cond: (id = c.poblacion)
+                     ->  Index Only Scan using audi_manager_venta_dni_comercial_07efa699_like on audi_manager_venta v  (cost=0.42..0.57 rows=3 width=10) (actual time=0.008..0.018 rows=12 loops=1)
+                           Index Cond: (dni_comercial = (t.dni)::text)
+                           Heap Fetches: 12
+               ->  Index Only Scan using idx_audi_manager_comercial_dni on audi_manager_comercial co  (cost=0.41..0.46 rows=1 width=10) (actual time=0.003..0.003 rows=1 loops=12)
+                     Index Cond: (dni = (t.dni)::text)
+                     Heap Fetches: 12
+ Planning Time: 1.473 ms
+ Execution Time: 61.524 ms
+(31 rows)

@@ -1,0 +1,82 @@
+from django.urls import path
+from . import views
+from django.shortcuts import redirect
+
+urlpatterns = [
+    path("login/", views.login, name="login"),
+    path("logout/", views.logout, name="logout"),
+    path("dashboard/", views.dashboard, name="dashboard"),
+    path("", lambda req: redirect("dashboard/"), name="dashboard"),
+    path("personas/", views.list_personas, name="list_personas"),
+    path("personas/<str:persona_dni>/", views.persona, name="persona"),
+    path("clientes/", views.list_clientes, name="list_clientes"),
+    path("clientes/<str:cliente_dni>/", views.cliente, name="cliente"),
+    path("paises/", views.list_paises, name="list_paises"),
+    path("paises/<str:pais_nombre>/", views.pais, name="pais"),
+    path("poblaciones/", views.list_poblaciones, name="list_poblaciones"),
+    path(
+        "poblaciones/<str:poblacion_pais>/<str:poblacion_nombre>/",
+        views.poblacion,
+        name="poblacion",
+    ),
+    path("comerciales/<str:comercial_dni>/", views.comercial, name="comercial"),
+    path("concesionarios/", views.list_concesionarios, name="list_concesionarios"),
+    path(
+        "concesionarios/<str:concesionario_num_tel>/",
+        views.concesionario,
+        name="concesionario",
+    ),
+    path("trabajadores/", views.list_trabajadores, name="list_trabajadores"),
+    path("trabajadores/<str:trabajador_dni>/", views.trabajador, name="trabajador"),
+    path("tecnicos/", views.list_tecnicos, name="list_tecnicos"),
+    path("tecnicos/<str:tecnico_dni>/", views.tecnico, name="tecnico"),
+    path("comerciales/", views.list_comerciales, name="list_comerciales"),
+    path("motores/", views.list_motores, name="list_motores"),
+    path(
+        "motores/<str:motor_combustible>/<str:motor_potencia>/",
+        views.motor,
+        name="motor",
+    ),
+    path("exposiciones/", views.list_exposiciones, name="list_exposiciones"),
+    path("exposiciones/<str:numero>/", views.exposicion, name="exposicion"),
+    path("ventas/", views.list_ventas, name="list_ventas"),
+    path("ventas/<str:num_bastidor>/<str:dni_cliente>", views.venta, name="venta"),
+    path(
+        "get_exposicion/<str:num_tel>",
+        views.get_exposicion,
+        name="get_exposicion",
+    ),
+    path(
+        "get_comercial/<str:concesionario_num_tel>",
+        views.get_comercial,
+        name="get_comercial",
+    ),
+    path("paises/", views.list_paises, name="list_paises"),
+    path("valoraciones/", views.list_valoraciones, name="list_valoraciones"),
+    path("add_valoracion/", views.add_valoracion, name="add_valoracion"),
+    path(
+        "valoraciones/<str:cliente_dni>/<str:concesionario_num_tel>",
+        views.valoracion,
+        name="valoracion",
+    ),
+    path(
+        "delete_valoracion/<str:cliente_dni>/<str:concesionario_num_tel>",
+        views.delete_valoracion,
+        name="delete_valoracion",
+    ),
+    path("vehiculos/", views.list_vehiculos, name="list_vehiculos"),
+    path("vehiculos/<str:num_bastidor>/", views.vehiculo, name="vehiculo"),
+    path(
+        "add_vehiculo/<str:num_bastidor>/<str:dni_tecnico>",
+        views.add_vehiculo,
+        name="add_vehiculo",
+    ),
+    path("delete_persona/<str:dni>/", views.delete_persona, name="delete_persona"),
+    path("add_cliente/", views.add_cliente, name="add_cliente"),
+    path("delete_cliente/<str:dni>/", views.delete_cliente, name="delete_cliente"),
+    path(
+        "delete_vehiculo/<str:num_bastidor>/<str:dni_tecnico>",
+        views.delete_vehiculo,
+        name="delete_vehiculo",
+    ),
+]

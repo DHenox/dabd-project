@@ -1,0 +1,72 @@
+<html lang="es">
+    <script>
+        var kilometros = {{ kilometros| safe }};
+        var precios = {{ precios| safe }};
+    </script>
+    
+    <head>
+        <title>Concesionario</title>
+        {% load static %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.css" />
+        <link rel="stylesheet" href="{% static 'css/about_concesionario.css' %}">
+    
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.js"></script>
+        <script src="{% static 'js/about_concesionario.js'%}"></script>
+    </head>
+    
+    
+    <body>
+        <br>
+        <a href="/audi_manager/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg"
+                alt="Audi" class="logo" /></a>
+        <br>
+
+        <span class="totales"><strong>Exposiciones totales:</strong> {{ exposiciones_count }}</span>
+    
+        <div class="container">
+            <div class="filter-and-list">
+                <div class="filter-container text-center mt-4">
+                    <div class="row justify-content-center">
+                        <div class="col-md-4">
+                            <input type="text" name="numero" id="numero-input" placeholder="Buscar por ID exposición"
+                                value="{% if numero_query is not empty %}{{ numero_query }}{% else %}{{ '' }}{% endif %}" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="filter-label">Filtrar por kilómetros:</label>
+                            <div id="kilometros-slider"></div>
+                            <p id="kilometros-values" class="centered"></p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="filter-label">Filtrar por precio:</label>
+                            <div id="precio-slider"></div>
+                            <p id="precio-values" class="centered"></p>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="row" id="exposiciones-list">
+                    {% for exposicion in exposiciones %}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <a class="card-link"
+                                    href="/audi_manager/exposiciones/{{ exposicion.concesionario.num_tel }}/{{ exposicion.numero }}">
+                                    <h5 class="card-title">Numero: {{ exposicion.numero }}</h5>
+                                    <p class="card-text">Kilómetros: {{ exposicion.km }} km</p>
+                                    <p class="card-text">Precio: {{ exposicion.precio }} €</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col">
+                        <p>No se encontraron exposiciones.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

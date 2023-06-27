@@ -1,0 +1,65 @@
+<html lang="es">
+
+<head>
+    <title>Cliente</title>
+</head>
+
+<form method="post" action="{% url 'cliente' cliente.persona.dni %}">
+    {% csrf_token %}
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" name="nombre" value="{{ cliente.persona.nombre }}">
+    <br>
+    <label for="num_tel">Número de teléfono:</label>
+    <input type="text" id="num_tel" name="num_tel" value="{{ cliente.persona.num_tel }}">
+    <br>
+    <label for="email">Email:</label>
+    <input type="text" id="email" name="email" value="{{ cliente.email }}">
+    <br>
+    <input type="submit" value="Guardar cambios">
+    <!-- dni -->
+</form>
+
+
+<!--     - Que salga dentro de cliente la venta (km, vehiculo etc) y si clicas al vehiculo que vaya a ese vehiculo
+        - Valoraciones        
+            VALORACION
+            - Cuadrado a la izq ventas del cliente
+            - Derecha valoracion cliente -->
+
+
+<h1>Cliente {{ cliente.persona.nombre }}</h1>
+<h2>Ventas</h2>
+<ul>
+    {% for ventas, vehiculos in combined_data %}
+    <li>
+        Número bastidor vehículo: <a href="/audi_manager/vehiculos/{{ vehiculos.num_bastidor }}">
+            {{ vehiculos.num_bastidor }}</a>
+        <ul>
+            <li>ID exposición: <a href="/audi_manager/exposiciones/{{ ventas.exposicion_id }}">
+                    {{ ventas.exposicion.numero}} </a> </li>
+            <li>Precio final: {{ ventas.precio_final }} €</li>
+        </ul>
+    </li>
+    {% empty %}
+    <li>No hay ventas</li>
+    {% endfor %}
+
+</ul>
+
+<h2>Valoraciones</h2>
+<ul>
+    {% for valoracion in valoraciones %}
+    <li>
+        <a href="/audi_manager/concesionarios/{{ valoracion.concesionario.num_tel }}">
+            {{ valoracion.concesionario.num_tel }}</a>
+        <ul>
+            <li>Valoración: {{ valoracion.rating }}</li>
+            <li>Fecha: {{ valoracion.fecha }}</li>
+        </ul>
+    </li>
+    {% empty %}
+    <li>No hay valoraciones</li>
+    {% endfor %}
+</ul>
+
+</html>

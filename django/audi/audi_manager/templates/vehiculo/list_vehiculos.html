@@ -1,0 +1,99 @@
+<html lang="es">
+
+<head>
+    <title>Vehículos</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/list_vehiculos.css' %}">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/list_vehiculos.js'%}"></script>
+</head>
+
+<body>
+    <br>
+    <a href="/audi_manager/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg"
+            alt="Audi" class="logo" /></a>
+    <br>
+
+    <button class="logout-button" onclick="logout()">Logout</button>
+
+    <span class="totales"><strong>Vehículos totales:</strong> {{ vehiculos_count }}</span>
+    <br>
+    <!-- Rest of the HTML template -->
+    <form class="XD" method="GET" action="">
+        <input type="text" name="bastidor" id="bastidor-input" placeholder="Buscar por bastidor"
+            value="{% if bastidor_query %}{{ bastidor_query }}{% endif %}" />
+        <input type="text" name="matricula" id="matricula-input" placeholder="Buscar por matricula"
+            value="{% if matricula_query %}{{ matricula_query }}{% endif %}" />
+        <div class="dropbox">
+            <label class="filter-label">Filtrar por año de fabricación:</label>
+            <select id="ano-filter" class="custom-select" name="ano">
+                <option value="">Todos los años</option>
+                {% for ano in anos %}
+                {% if ano == ano_query %}
+                <option value="{{ ano }} AAAA" selected="selected">{{ ano }}</option>
+                {% else %}
+                <option value="{{ ano }}">{{ ano }} </option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <input type="text" name="modelo" id="modelo-input" placeholder="Buscar por modelo"
+            value="{% if modelo_query is not empty %}{{ modelo_query }}{% else %}{{ '' }}{% endif %}" />
+    </form>
+
+    <ul class="vehiculos-list">
+        {% for vehiculo in vehiculos_page %}
+        <li>
+            <a href="/audi_manager/vehiculos/{{ vehiculo.num_bastidor }}">
+                <div style="display: flex; justify-content: space-between; width: 100%; margin: 0 auto;">
+                    <div style="width: 20%;">
+                        <strong>Num bastidor:</strong> {{ vehiculo.num_bastidor }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Matricula:</strong> {{ vehiculo.matricula }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Año fabricación:</strong> {{ vehiculo.ano_fabricacion }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Modelo:</strong> {{ vehiculo.modelo }}
+                    </div>
+                    <div style="width: 20%;">
+                        <form style="display: inline" class="eliminar"
+                            action="/audi_manager/delete_vehiculo/{{ vehiculo.num_bastidor }}" method="get">
+                            <input type="submit" value="Eliminar" />
+                        </form>
+                    </div>
+                </div>
+            </a>
+        </li>
+        {% empty %}
+        <li>No vehiculos found.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Add pagination links -->
+    <div class="pagination mdl-card__actions mdl-card--border">
+        {% if vehiculos_page.has_previous %}
+        <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+            href="?bastidor={{ bastidor_query }}&matricula={{ matricula_query }}&ano={{ ano_query }}&modelo={{ modelo_query }}&page=1">&laquo;
+            First</a>
+        <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+            href="?bastidor={{ bastidor_query }}&matricula={{ matricula_query }}&ano={{ ano_query }}&modelo={{ modelo_query }}&page={{ vehiculos_page.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span class="current-page">{{ vehiculos_page.number }}</span>
+
+        {% if vehiculos_page.has_next %}
+        <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+            href="?bastidor={{ bastidor_query }}&matricula={{ matricula_query }}&ano={{ ano_query }}&modelo={{ modelo_query }}&page={{ vehiculos_page.next_page_number }}">Next</a>
+        <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+            href="?bastidor={{ bastidor_query }}&matricula={{ matricula_query }}&ano={{ ano_query }}&modelo={{ modelo_query }}&page={{ vehiculos_page.paginator.num_pages }}">Last
+            &raquo;</a>
+        {% endif %}
+    </div>
+</body>
+
+</html>

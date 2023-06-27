@@ -1,0 +1,199 @@
+<!-- list_clientes.html -->
+<html lang="es">
+
+<head>
+    <title>Clientes</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/list_clientes.css'%}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="{% static 'js/list_clientes.js'%}"></script>
+</head>
+
+
+<body>
+    <br>
+    <br>
+    <a href="/audi_manager/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg"
+            alt="Audi" class="logo" /></a>
+    <br>
+    <br>
+
+    <button class="logout-button" onclick="logout()">Logout</button>
+
+    <span class="totales"><strong>Clientes totales:</strong> {{ clientes_count }}</span>
+    <br>
+    <!-- Rest of the HTML template -->
+    <form class="XD" method="GET" action="">
+        <input type="text" name="dni" id="dni-input" placeholder="Buscar por dni"
+            value="{% if dni_query is not empty %}{{ dni_query }}{% else %}{{ '' }}{% endif %}" />
+        <input type="text" name="name" id="name-input" placeholder="Buscar por nombre"
+            value="{% if name_query is not empty %}{{ name_query }}{% else %}{{ '' }}{% endif %}" />
+    </form>
+
+
+    <div class="openBtn">
+        <button class="openButton" onclick="openForm()"><strong>Añadir cliente</strong></button>
+    </div>
+
+    <div class="addClientePopup">
+        <div class="formPopup" id="popupForm">
+            <form action="/audi_manager/add_cliente/" class="formContainer" method="post">
+                {% csrf_token %}
+                <h1>Nuevo cliente</h1>
+                <div class="column">
+                    <h2>Información cliente</h2>
+                    <label for="dni">
+                        <strong>DNI</strong>
+                    </label>
+                    <input type="text" id="dni" placeholder="DNI" name="dni" maxlength="9" autocomplete="off" required>
+                    <label for="nombre">
+                        <strong>Nombre</strong>
+                    </label>
+                    <input type="text" id="nombre" placeholder="Nombre completo" name="nombre" maxlength="50"
+                        autocomplete="off" required>
+                    <label for="username">
+                        <strong>Username</strong>
+                    </label>
+                    <input type="text" id="username" placeholder="Username" name="username" maxlength="50"
+                        autocomplete="off" required>
+                    <label for="password">
+                        <strong>Password</strong>
+                    </label>
+                    <input type="text" id="password" placeholder="Password" name="password" maxlength="50"
+                        autocomplete="new-password" required style="-webkit-text-security: disc;">
+                    <label for="num_tel">
+                        <strong>Teléfono</strong>
+                    </label>
+                    <input type="text" id="num_tel" placeholder="Número de teléfono" name="num_tel" maxlength="9"
+                        autocomplete="off" required>
+                    <label for="email">
+                        <strong>E-mail</strong>
+                    </label>
+                    <input type="email" id="email" placeholder="E-mail" name="email" maxlength="50" autocomplete="off"
+                        required>
+                </div>
+                <div class="column">
+                    <!-- VENTA -->
+                    <h2>Información venta</h2>
+                    <label for="fecha">
+                        <strong>Fecha</strong>
+                    </label>
+                    <input type="text" value="{% now " Y-m-d" %}" id="fecha" placeholder="{% now " Y-m-d" %}"
+                        name="fecha" maxlength="9" autocomplete="off" readonly required>
+                    <label for="precio_final">
+                        <strong>Precio final</strong>
+                    </label>
+                    <input type="text" id="precio_final" placeholder="Precio final venta" name="precio_final"
+                        maxlength="50" autocomplete="off" required>
+                    <label for="concesionario">
+                        <strong>Concesionario</strong>
+                    </label>
+                    <select name="concesionario" id="concesionario">
+                        {% for concesionario in concesionarios_list %}
+                        <option value="{{ concesionario.num_tel }}">{{ concesionario.num_tel }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="exposicion">
+                        <strong>Exposición</strong>
+                    </label>
+                    <select name="exposicion" id="exposicion">
+                        {% for exposicion in exposiciones_list %}
+                        <option value="{{ exposicion.numero }}">
+                            {{ exposicion.numero }} - {{ exposicion.precio }} €
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <label for="comercial">
+                        <strong>Comercial</strong>
+                    </label>
+                    <select name="comercial" id="comercial">
+                        {% for comercial in comerciales_list %}
+                        <option value="{{ comercial.dni }}">{{ comercial.dni }} - {{ comercial.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="column">
+                    <!-- VALORACION -->
+                    <h2>Información valoracion</h2>
+                    <!-- concesionario -->
+                    <label for="concesionario2">
+                        <strong>Concesionario</strong>
+                    </label>
+                    <input type="text" value="" id="concesionario2" placeholder="" name="concesionario2" maxlength="9"
+                        autocomplete="off" readonly required>
+                    <!-- rating -->
+                    <label for="rating">
+                        <strong>Rating</strong>
+                    </label>
+                    <select name="rating" id="rating">
+                        <option value="1">1 estrella</option>
+                        <option value="2">2 estrellas</option>
+                        <option value="3">3 estrellas</option>
+                        <option value="4">4 estrellas</option>
+                        <option value="5">5 estrellas</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn add">Añadir</button>
+                <button type="button" class="btn cancel" onclick="closeForm()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <ul class="clientes-list">
+        {% for cliente in clientes_page %}
+        <li>
+            <a class="enlace" href="/audi_manager/clientes/{{ cliente.dni }}">
+                <div style="display: flex; justify-content: space-between; width: 100%; margin: 0 auto;">
+                    <div style="width: 20%;">
+                        <strong>DNI:</strong> {{ cliente.dni }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Nombre:</strong> {{ cliente.nombre }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Núm. teléfono:</strong> {{ cliente.num_tel }}
+                    </div>
+
+                    <div style="width: 20%;">
+                        <strong>E-mail:</strong> {{ cliente.email }}
+                    </div>
+                    <div style="width: 20%;">
+                        <form style="display: inline" class="eliminar"
+                            action="/audi_manager/delete_cliente/{{ cliente.dni }}" method="get">
+                            <input type="submit" value="Eliminar" />
+                        </form>
+                    </div>
+                </div>
+            </a>
+        </li>
+        {% empty %}
+        <li>No clientes found.</li>
+        {% endfor %}
+    </ul>
+
+
+    <!-- Add pagination links -->
+    <div class="pagination mdl-card__actions mdl-card--border">
+        {% if clientes_page.has_previous %}
+        <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+            href="?name={{ name_query }}&dni={{ dni_query }}&page=1">&laquo; First</a>
+        <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+            href="?name={{ name_query }}&dni={{ dni_query }}&page={{ clientes_page.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span class="current-page">{{ clientes_page.number }}</span>
+
+        {% if clientes_page.has_next %}
+        <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+            href="?name={{ name_query }}&dni={{ dni_query }}&page={{ clientes_page.next_page_number }}">Next</a>
+        <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+            href="?name={{ name_query }}&dni={{ dni_query }}&page={{ clientes_page.paginator.num_pages }}">Last
+            &raquo;</a>
+        {% endif %}
+    </div>
+</body>
+
+</html>

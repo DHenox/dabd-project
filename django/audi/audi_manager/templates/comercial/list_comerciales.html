@@ -1,0 +1,93 @@
+<html lang="es">
+    <head>
+        <title>Comerciales</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/list_comerciales.css'%}">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="{% static 'js/list_comerciales.js'%}"></script>
+    </head>
+    
+    <body>
+        <br>
+        <br>
+        <a href="/audi_manager/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg"
+                alt="Audi" class="logo" /></a>
+        <br>
+        <br>
+    
+        <button class="logout-button" onclick="logout()">Logout</button>
+    
+        <span class="totales"><strong>Tecnicos totales:</strong> {{ comerciales_count }}</span>
+        <br>
+    
+        <!-- Rest of the HTML template -->
+        <form class="XD" method="GET" action="">
+            <input type="text" name="num_tel" id="num_tel-input" placeholder="Buscar por teléfono"
+                value="{% if num_tel_query is not empty %}{{ num_tel_query }}{% else %}{{ '' }}{% endif %}" />
+            <input type="text" name="pais" id="pais-input" placeholder="Buscar por país"
+                value="{% if pais_query is not empty %}{{ pais_query }}{% else %}{{ '' }}{% endif %}" />
+            <input type="text" name="poblacion" id="poblacion-input" placeholder="Buscar por poblacion"
+                value="{% if poblacion_query is not empty %}{{ poblacion_query }}{% else %}{{ '' }}{% endif %}" />
+        </form>
+    
+        <ul class="comerciales-list">
+            {% for comercial in comerciales_page %}
+            <a href="/audi_manager/comerciales/{{ comercial.dni }}">
+                <li>
+                    <div style="display: flex; justify-content: space-between; width: 100%; margin: 0 auto;">
+                        <div style="width: 15%;">
+                            <strong>DNI:</strong> {{ comercial.dni }}
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>Nombre:</strong> {{ comercial.nombre }}
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>Núm. teléfono:</strong> {{ comercial.num_tel }}
+                        </div>
+                        <div style="width: 30%;">
+                            <strong>E-Mail:</strong> {{ comercial.email }}
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>Disponibilidad:</strong> {{ comercial.disponibilidad }}
+                        </div>
+                        <div style="width: 15%;">
+                            <strong>Experiencia:</strong> {{ comercial.experiencia }}
+                        </div>
+                        <div style="width: 20%;">
+                            <form style="display: inline" class="eliminar"
+                                action="/audi_manager/delete_comercial/{{ comercial.dni }}" method="get">
+                                <input type="submit" value="Eliminar" />
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            </a>
+    
+            {% empty %}
+            <li>No comerciales found.</li>
+            {% endfor %}
+        </ul>
+    
+        <!-- Add pagination links -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if comerciales_page.has_previous %}
+                <a href="?num_tel={{ num_tel_query }}&poblacion={{ poblacion_query }}&pais={{ pais_query }}&page=1">&laquo;
+                    First</a>
+                <a
+                    href="?num_tel={{ num_tel_query }}&poblacion={{ poblacion_query }}&pais={{ pais_query }}&page={{ comerciales_page.previous_page_number }}">Previous</a>
+                {% endif %}
+    
+                <span class="current-page">{{ comerciales_page.number }}</span>
+    
+                {% if comerciales_page.has_next %}
+                <a
+                    href="?num_tel={{ num_tel_query }}&poblacion={{ poblacion_query }}&pais={{ pais_query }}&page={{ comerciales_page.next_page_number }}">Next</a>
+                <a
+                    href="?num_tel={{ num_tel_query }}&poblacion={{ poblacion_query }}&pais={{ pais_query }}&page={{ comerciales_page.paginator.num_pages }}">Last
+                    &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </body>
+</html>

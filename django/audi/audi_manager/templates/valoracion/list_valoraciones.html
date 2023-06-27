@@ -1,0 +1,178 @@
+<html lang="es">
+
+<head>
+    <title>Valoraciones</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/list_valoraciones.css'%}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/list_valoraciones.js'%}"></script>
+</head>
+
+<body>
+    <br>
+    <br>
+    <a href="/audi_manager/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg"
+            alt="Audi" class="logo" /></a>
+    <br>
+    <br>
+
+    <button class="logout-button" onclick="logout()">Logout</button>
+
+    <span class="totales"><strong>Valoraciones totales:</strong> {{ valoraciones_count }}</span>
+    <br>
+
+    <!-- Rest of the HTML template -->
+    <form class="XD" method="GET" action="">
+        <input type="text" name="dni" id="dni-input" placeholder="Buscar por dni"
+            value="{% if dni_query is not empty %}{{ dni_query }}{% else %}{{ '' }}{% endif %}" />
+        <input type="text" name="concesionario" id="concesionario-input" placeholder="Buscar por concesionario"
+            value="{% if concesionario_query is not empty %}{{ concesionario_query }}{% else %}{{ '' }}{% endif %}">
+        <!-- dropbox from 0 to 5 -->
+        Buscar por rating: <select name="rating" id="rating-input">
+            {% for i in '-012345'|make_list %}
+            {% if i == rating_query %}
+            <option value="{{ i }}" selected="selected">{{ rating_query }}</option>
+            {% else %}
+            <option value="{{ i }}">{{ i }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </form>
+
+    <!-- POPUP -->
+    <div class="openBtn">
+        <button class="openButton" onclick="openForm()"><strong>Añadir valoracion</strong></button>
+    </div>
+
+    <div class="loginPopup">
+        <div class="formPopup" id="popupForm">
+            <form action="/audi_manager/add_valoracion/" class="formContainer" method="post">
+                {% csrf_token %}
+                <h2>Añadir valoracion</h2>
+
+                <!-- condicional si esta iniciado sesion o no -->
+                {% if is_trabajador %}
+                <label for="dni">
+                    <strong>DNI CLIENTE</strong>
+                </label>
+                <input type="text" id="dni" placeholder="DNI" name="dni" maxlength="9" autocomplete="off" required>
+                {% else %}
+                <!-- si es cliente -->
+                <input type="text" value="{{ user.dni }}" id="dni" placeholder="{{ user.dni }}" name="dni" maxlength="9"
+                    autocomplete="off" hidden>
+                {% endif %}
+                <label for="concesionario">
+                    <strong>Concesionario</strong>
+                </label>
+                <input type="text" id="concesionario" placeholder="CONCESIONARIO" name="concesionario" maxlength="9"
+                    autocomplete="off" required>
+                <!-- FEHA -->
+                <!-- <label for="fecha">
+                        <strong>Fecha</strong>
+                    </label> -->
+                <!-- diabled input with todays date -->
+                <input type="hidden" value="{% now " Y-m-d" %}" id="fecha" placeholder="{% now " Y-m-d" %}" name="fecha"
+                    maxlength="9" autocomplete="off" required>
+                <label for="rating">
+                    <strong>Valoración</strong>
+                </label>
+                <select name="rating" id="rating">
+                    {% for i in '012345'|make_list %}
+                    <option value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="btn add">Añadir</button>
+                <button type="button" class="btn cancel" onclick="closeForm()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FIN POPUP -->
+
+    <!-- LISTA VALORACIONES -->
+    <ul class="valoraciones-list">
+        {% for valoracion in valoraciones_page %}
+        <a href="/audi_manager/valoraciones/{{ valoracion.cliente.dni }}/{{ valoracion.concesionario.num_tel }}">
+            <li>
+                <div style="display: flex; justify-content: space-between; width: 100%; margin: 0 auto;">
+                    <div style="width: 20%;">
+                        <strong>DNI:</strong> {{ valoracion.cliente.dni }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Nombre:</strong> {{ valoracion.cliente.nombre }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Fecha:</strong> {{ valoracion.fecha }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Concesionario:</strong> {{ valoracion.concesionario.num_tel }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Valoración:</strong> {{ valoracion.rating }}
+                        <i data-star={{ valoracion.rating }}></i>
+                    </div>
+                    {% if is_trabajador %}
+                    <div style="width: 20%;">
+                        <form style="display: inline" class="eliminar"
+                            action="/audi_manager/delete_valoracion/{{ valoracion.cliente.dni }}/{{ valoracion.concesionario.num_tel }}"
+                            method="get">
+                            <input type="submit" value="Eliminar" />
+                        </form>
+                    </div>
+                    {% else %}
+                    <!-- if has same dni -->
+                    {% if user.dni == valoracion.cliente.dni %}
+                    <div style="width: 20%;">
+                        <form style="display: inline" class="eliminar"
+                            action="/audi_manager/delete_valoracion/{{ valoracion.cliente.dni }}/{{ valoracion.concesionario.num_tel }}"
+                            method="get">
+                            <input type="submit" value="Eliminar" />
+                        </form>
+                    </div>
+                    {% else %}
+                    <div style="width: 20%;">
+                        <form style="display: inline" class="eliminar"
+                            action="/audi_manager/delete_valoracion/{{ valoracion.cliente.dni }}/{{ valoracion.concesionario.num_tel }}"
+                            method="get">
+                            <input type="submit" value="Eliminar" disabled />
+                        </form>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+                </div>
+            </li>
+        </a>
+
+        {% empty %}
+        <li>No valoraciones found.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- FIN LISTA VALORACIONES -->
+
+    <!-- Add pagination links -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if valoraciones_page.has_previous %}
+            <a href="?rating={{ rating_query }}&dni={{ dni_query }}&concesionario={{ concesionario_query }}&page=1">&laquo;
+                First</a>
+            <a
+                href="?rating={{ rating_query }}&dni={{ dni_query }}&concesionario={{ concesionario_query }}&page={{ valoraciones_page.previous_page_number }}">Previous</a>
+            {% endif %}
+
+            <span class="current-page">{{ valoraciones_page.number }}</span>
+
+            {% if valoraciones_page.has_next %}
+            <a
+                href="?rating={{ rating_query }}&dni={{ dni_query }}&concesionario={{ concesionario_query }}&page={{ valoraciones_page.next_page_number }}">Next</a>
+            <a
+                href="?rating={{ rating_query }}&dni={{ dni_query }}&concesionario={{ concesionario_query }}&page={{ valoraciones_page.paginator.num_pages }}">Last
+                &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</body>
+
+</html>

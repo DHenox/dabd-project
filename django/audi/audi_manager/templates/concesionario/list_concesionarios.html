@@ -1,0 +1,95 @@
+<!-- list_concesionarios.html -->
+<html lang="es">
+    <head>
+        <title>Concesionarios</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/list_concesionarios.css'%}">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="{% static 'js/list_concesionarios.js'%}"></script>
+    </head>
+    
+    <body>
+        <br>
+        <br>
+        <a href="/audi_manager/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg"
+                alt="Audi" class="logo" /></a>
+        <br>
+        <br>
+    
+        <button class="logout-button" onclick="logout()">Logout</button>
+    
+        <span class="totales"><strong>Concesionarios totales:</strong> {{ concesionarios_count }}</span>
+        <br>
+        <!-- Rest of the HTML template -->
+        <form class="XD" method="GET" action="">
+            <input type="text" name="num_tel" id="num_tel-input" placeholder="Buscar por teléfono"
+                value="{% if num_tel_query is not empty %}{{ num_tel_query }}{% else %}{{ '' }}{% endif %}" />
+            <input type="text" name="pais" id="pais-input" placeholder="Buscar por país"
+                value="{% if pais_query is not empty %}{{ pais_query }}{% else %}{{ '' }}{% endif %}" />
+            <input type="text" name="poblacion" id="poblacion-input" placeholder="Buscar por poblacion"
+                value="{% if poblacion_query is not empty %}{{ poblacion_query }}{% else %}{{ '' }}{% endif %}" />
+        </form>
+    
+        <ul class="concesionarios-list">
+            {% for concesionario in concesionarios_page %}
+            <a href="/audi_manager/concesionarios/{{ concesionario.num_tel }}">
+                <li>
+                    <div style="display: flex; justify-content: space-between; width: 100%; margin: 0 auto;">
+                        <div style="width: 20%;">
+                            <strong>Núm. teléfono:</strong> {{ concesionario.num_tel }}
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>País:</strong> {{ concesionario.poblacion.pais.nombre }}
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>Población:</strong> {{ concesionario.poblacion.nombre }}
+                        </div>
+                        <div style="width: 20%;">
+                            <strong>Ventas:</strong> {{ concesionario.ventas }}
+                        </div>
+                        <div style="display: flex; justify-content: space-between; width: 25%; margin: 0 auto;">
+                            <span style="width: 50%;" class="valoracion-media">
+                                <strong >Valoración media:</strong> {{ concesionario.avg_rating }}
+                            </span>
+                            <span style="width: 50%;" class="valoracion-media">
+                                <i data-star={{ concesionario.avg_rating }}></i>
+                            </span>
+                        </div>
+                        <div style="width: 10%;">
+                            <form style="display: inline" class="eliminar"
+                                action="/audi_manager/delete_concesionario/{{ concesionario.num_tel }}" method="get">
+                                <input type="submit" value="Eliminar" />
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            </a>
+    
+            {% empty %}
+            <li>No concesionarios found.</li>
+            {% endfor %}
+        </ul>
+    
+        <!-- Add pagination links -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if concesionarios_page.has_previous %}
+                <a href="?num_tel={{ num_tel_query }}&poblacion={{ poblacion_query }}&pais={{ pais_query }}&page=1">&laquo;
+                    First</a>
+                <a
+                    href="?num_tel={{ num_tel_query }}&poblacion={{ poblacion_query }}&pais={{ pais_query }}&page={{ concesionarios_page.previous_page_number }}">Previous</a>
+                {% endif %}
+    
+                <span class="current-page">{{ concesionarios_page.number }}</span>
+    
+                {% if concesionarios_page.has_next %}
+                <a
+                    href="?num_tel={{ num_tel_query }}&poblacion={{ poblacion_query }}&pais={{ pais_query }}&page={{ concesionarios_page.next_page_number }}">Next</a>
+                <a
+                    href="?num_tel={{ num_tel_query }}&poblacion={{ poblacion_query }}&pais={{ pais_query }}&page={{ concesionarios_page.paginator.num_pages }}">Last
+                    &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </body>
+</html>

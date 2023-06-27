@@ -1,0 +1,16 @@
+<html lang="es">
+    <head>
+        <title>País</title>
+    </head>
+    <h2>País</h2>
+    <ul>
+        <li>{{ pais.nombre }}</li>
+    </ul>
+    
+    <h2>Poblaciones</h2>
+    <ul>
+        {% for poblacion in poblaciones %}
+        <li><a href="/audi_manager/poblaciones/{{ pais.nombre }}/{{ poblacion.nombre }}">{{ poblacion.nombre }}</a></li>
+        {% endfor %}
+    </ul>
+</html>

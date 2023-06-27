@@ -1,0 +1,134 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    background-color: #f5f5f5;
+    padding: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 5%;
+    text-align: center;
+}
+
+.logout-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #333;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #555;
+}
+
+/* Pagination Styles */
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination a {
+    color: #333;
+    padding: 8px 12px;
+    text-decoration: none;
+    border: 1px solid #505050;
+    margin: 0 4px;
+    border-radius: 4px;
+}
+
+.pagination a:hover {
+    background-color: #eee;
+}
+
+.pagination .current-page {
+    font-weight: bold;
+    padding: 8px 12px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 4px;
+}
+
+/* Concesionarios List Styles */
+.exposiciones-list {
+    margin-top: 20px;
+    list-style-type: none;
+    padding: 0;
+}
+
+.exposiciones-list a {
+    text-decoration: none;
+    color: #333;
+}
+
+.exposiciones-list li {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.20);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    margin-top: 16px;
+    align-items: center;
+    padding: 8px;
+    color: #333;
+}
+
+.exposiciones-list li:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.exposiciones-list li a {
+    display: block;
+    color: #333;
+    text-decoration: none;
+}
+
+.totales {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.XD {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.XD * {
+    margin: 0px 10px;
+}
+
+.XD input {
+    border-radius: 10px;
+    line-height: 1.5;
+    border-width: 1px;
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+}
+
+.XD input:focus {
+    outline: none;
+    border-color: #505050;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}

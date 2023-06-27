@@ -1,0 +1,84 @@
+<!-- list_personas.html -->
+<html lang="es">
+    <head>
+        <title>Personas</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/list_personas.css'%}">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="{% static 'js/list_personas.js'%}"></script>
+    </head>
+    
+    <body>
+        <br>
+        <br>
+        <a href="/audi_manager/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg"
+                alt="Audi" class="logo" /></a>
+        <br>
+        <br>
+    
+        <button class="logout-button" onclick="logout()">Logout</button>
+    
+        <span class="totales"><strong>Personas totales:</strong> {{ personas_count }}</span>
+        <br>
+        <!-- Rest of the HTML template -->
+        <form class="XD" method="GET" action="">
+            <input type="text" name="dni" id="dni-input" placeholder="Buscar por DNI"
+                value="{% if dni_query is not empty %}{{ dni_query }}{% else %}{{ '' }}{% endif %}" />
+            <input type="text" name="name" id="name-input" placeholder="Buscar por nombre"
+                value="{% if name_query is not empty %}{{ name_query }}{% else %}{{ '' }}{% endif %}" />
+        </form>
+    
+        <ul class="personas-list">
+            {% for persona in personas_page %}
+            <li>
+                <div style="display: flex; justify-content: space-between; width: 100%; margin: 0 auto;">
+                    <div style="width: 20%;">
+                        <strong>DNI:</strong> {{ persona.dni }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Nombre:</strong> {{ persona.nombre }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Núm. teléfono:</strong> {{ persona.num_tel }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Username:</strong> {{ persona.username }}
+                    </div>
+                    <div style="width: 20%;">
+                        <strong>Password:</strong> {{ persona.password }}
+                    </div>
+    
+                    <div style="width: 20%;">
+                        <form style="display: inline" class="eliminar"
+                            action="/audi_manager/delete_persona/{{ persona.dni }}" method="get">
+                            <input type="submit" value="Eliminar" />
+                        </form>
+                    </div>
+                </div>
+            </li>
+            {% empty %}
+            <li>No personas found.</li>
+            {% endfor %}
+        </ul>
+    
+        <!-- Add pagination links -->
+        <div class="pagination mdl-card__actions mdl-card--border">
+            {% if personas_page.has_previous %}
+            <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+                href="?name={{ name_query }}&dni={{ dni_query }}&page=1">&laquo; First</a>
+            <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+                href="?name={{ name_query }}&dni={{ dni_query }}&page={{ personas_page.previous_page_number }}">Previous</a>
+            {% endif %}
+    
+            <span class="current-page">{{ personas_page.number }}</span>
+    
+            {% if personas_page.has_next %}
+            <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+                href="?name={{ name_query }}&dni={{ dni_query }}&page={{ personas_page.next_page_number }}">Next</a>
+            <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+                href="?name={{ name_query }}&dni={{ dni_query }}&page={{ personas_page.paginator.num_pages }}">Last
+                &raquo;</a>
+            {% endif %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,71 @@
+<html lang="es">
+    <head>
+        <title>Motores</title>
+        {% load static %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{% static 'css/list_motores.css' %}">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="{% static 'js/list_motores.js'%}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.css" />
+    </head>
+    
+    <script>
+        var potencias = {{ potencias| safe }};
+    </script>
+    
+    <body>
+        <br>
+        <br>
+        <a href="/audi_manager/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg"
+                alt="Audi" class="logo" /></a>
+        <br>
+        <br>
+    
+        <button class="logout-button" onclick="logout()">Logout</button>
+    
+        <span class="totales"><strong>Motores totales:</strong> {{ motores_count }}</span>
+        <br>
+
+        <div class="container">
+            <div class="filter-container text-center mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-4">
+                        <label class="filter-label">Filtrar por tipo de combustible:</label>
+                        <select id="combustible-filter" class="form-control">
+                            <option value="">Todos los tipos de combustible</option>
+                            {% for combustible in combustibles %}
+                            <option value="{{ combustible }}">{{ combustible }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="filter-label">Filtrar por potencia:</label>
+                        <div id="potencia-slider"></div>
+                        <p id="potencia-values" class="centered"></p>
+                    </div>
+                </div>
+            </div>
+    
+    
+            <div class="row" id="motores-list">
+                {% for motor in motores_list %}
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <a class="card-link" href="/audi_manager/motores/{{ motor.combustible }}/{{ motor.potencia }}">
+                                <h5 class="card-title">Combustible: {{ motor.combustible }}</h5>
+                                <p class="card-text">Potencia: {{ motor.potencia }}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col">
+                    <p>No se encontraron motores.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+</html>

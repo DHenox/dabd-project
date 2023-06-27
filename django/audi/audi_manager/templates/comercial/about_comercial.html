@@ -1,0 +1,62 @@
+<html lang="es">
+    <head>
+        <title>Comercial</title>
+    </head>
+    <h2>Info</h2>
+    
+    <form method="post" action="{% url 'comercial' comercial.dni %}">
+        {% csrf_token %}
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ comercial.nombre }}">
+        <br>
+        <label for="dni">DNI:</label>
+        <input type="text" id="dni" name="dni" value="{{ comercial.dni }}">
+        <br>
+        <label for="num_tel">Número de teléfono:</label>
+        <input type="text" id="num_tel" name="num_tel" value="{{ comercial.num_tel }}">
+        <br>
+        <label for="experiencia">Experiencia:</label>
+        <input type="text" id="experiencia" name="experiencia" value="{{ comercial.experiencia }}">
+        <br>
+        <!-- disponibilidad y especializacion dropdowns -->
+        <label for="disponibilidad">Disponibilidad:</label>
+        <select name="disponibilidad" id="disponibilidad">
+            {% for disponibilidad in tipos_disponibilidades %}
+            {% if disponibilidad == comercial.trabajador.disponibilidad %}
+            <option value="{{ disponibilidad }}" selected="selected">{{ disponibilidad }}</option>
+            {% else %}
+            <option value="{{ disponibilidad }}">{{ disponibilidad }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <br>
+        <label for="especializacion">Especialización:</label>
+        <select name="especializacion" id="especializacion">
+            {% for especializacion in tipos_especializaciones %}
+            {% if especializacion == comercial.especializacion %}
+            <option value="{{ especializacion }}" selected="selected">{{ especializacion }}</option>
+            {% else %}
+            <option value="{{ especializacion }}">{{ especializacion }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <br>
+        <input type="submit" value="Guardar">
+        <p>{{ error_message }}</p>
+    </form>
+    
+    <H1>Ventas asociadas</H1>
+    <ul>
+        {% for venta in ventas %}
+        <!-- link to venta -->
+        <!--  -->
+        {% if venta.vehiculo.matricula == None %}
+        <li><strong>Matricula: </strong> Sin matricular</li>
+        {% else %}
+        <li><strong>Matricula: </strong> {{ venta.vehiculo.matricula }}</li>
+        {% endif %}
+        <li><strong>Modelo: </strong>{{ venta.vehiculo.modelo }}</li>
+        <br>
+        {% endfor %}
+    </ul>
+</html>

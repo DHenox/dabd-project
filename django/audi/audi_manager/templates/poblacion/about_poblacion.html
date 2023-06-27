@@ -1,0 +1,39 @@
+<html lang="es">
+    <head>
+        <title>Población</title>
+    </head>
+    <body>
+        <h2>Población</h2>
+        <ul>
+            <li>{{ poblacion.nombre }}</li>
+        </ul>
+    
+        <h2>Concesionario mas ventas</h2>
+        <ul>
+            <li><a href="/audi_manager/concesionarios/{{ concesionario_masventas.num_tel }}">
+                    TEL: {{ concesionario_masventas.num_tel }}
+                    Email: {{ concesionario_masventas.email }}
+                </a>
+            </li>
+        </ul>
+    
+        <h2>Concesionarios</h2>
+        <ul>
+            {% for concesionario in concesionarios %}
+            <li>
+                <a href="/audi_manager/concesionarios/{{ concesionario.num_tel }}">
+                    {% if concesionario.num_tel == concesionario_masventas.num_tel %}
+                    <strong>
+                        TEL: {{ concesionario.num_tel }}
+                        Email: {{ concesionario.email }} <-- Concesionario con más ventas
+                    </strong>
+                    {% else %}
+                        TEL: {{ concesionario.num_tel }}
+                        Email: {{ concesionario.email }}
+                    {% endif %}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
